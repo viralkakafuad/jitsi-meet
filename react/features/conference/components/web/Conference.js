@@ -25,7 +25,7 @@ import {
 } from '../AbstractConference';
 import type { AbstractProps } from '../AbstractConference';
 
-import Labels from './Labels';
+import Subject from './Subject'
 import { default as Notice } from './Notice';
 
 declare var APP: Object;
@@ -196,13 +196,13 @@ class Conference extends AbstractConference<Props, *> {
                 id = 'videoconference_page'
                 onMouseMove = { this._onShowToolbar }
                 ref = { this._setBackground }>
+                <Subject />
 
                 <Notice />
                 <div id = 'videospace'>
                     <LargeVideo />
                     <KnockingParticipantList />
                     <Filmstrip />
-                    { hideLabels || <Labels /> }
                 </div>
 
                 { _showPrejoin || _isLobbyScreenVisible || <Toolbox /> }

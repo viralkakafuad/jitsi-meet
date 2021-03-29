@@ -24,16 +24,16 @@ class TranscribingLabel extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
-        if (!this.props._showLabel) {
-            return null;
-        }
+        // if (!this.props._showLabel) {
+        //     return null;
+        // }
 
         return (
             <Tooltip
                 content = { this.props.t('transcribing.labelToolTip') }
-                position = { 'left' }>
+                position = { 'bottom' }>
                 <CircularLabel
-                    className = 'recording-label'
+                    className = 'label--red'
                     label = { this.props.t('transcribing.tr') } />
             </Tooltip>
         );

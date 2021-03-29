@@ -23,18 +23,16 @@ class RecordingLabel extends AbstractRecordingLabel {
      * @inheritdoc
      */
     _renderLabel() {
-        if (this.props._status !== JitsiRecordingConstants.status.ON) {
-            // Since there are no expanded labels on web, we only render this
-            // label when the recording status is ON.
-            return null;
-        }
+        // if (this.props._status !== JitsiRecordingConstants.status.ON) {
+        //     // Since there are no expanded labels on web, we only render this
+        //     // label when the recording status is ON.
+        //     return null;
+        // }
 
         return (
-            <div>
                 <CircularLabel
                     className = { this.props.mode }
                     label = { this.props.t(this._getLabelKey()) } />
-            </div>
         );
     }
 

@@ -25,16 +25,16 @@ class E2EELabel extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
-        if (!this.props._showLabel) {
-            return null;
-        }
+        // if (!this.props._showLabel) {
+        //     return null;
+        // }
 
         return (
             <Tooltip
                 content = { this.props.t('e2ee.labelToolTip') }
-                position = { 'left' }>
+                position = { 'bottom' }>
                 <CircularLabel
-                    className = 'e2ee'
+                    className = 'label--green'
                     icon = { IconE2EE } />
             </Tooltip>
         );

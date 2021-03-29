@@ -69,12 +69,9 @@ class Labels extends AbstractLabels<Props, State> {
         const { _filmstripVisible } = this.props;
         const { filmstripBecomingVisible } = this.state;
         const { VIDEO_QUALITY_LABEL_DISABLED } = interfaceConfig;
-        const className = `large-video-labels ${
-            filmstripBecomingVisible ? 'opening' : ''} ${
-            _filmstripVisible ? 'with-filmstrip' : 'without-filmstrip'}`;
 
         return (
-            <div className = { className } >
+            <>
                 {
                     this._renderE2EELabel()
                 }
@@ -99,7 +96,7 @@ class Labels extends AbstractLabels<Props, State> {
                 {
                     this._renderInsecureRoomNameLabel()
                 }
-            </div>
+            </>
         );
     }
 

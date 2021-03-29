@@ -7,6 +7,7 @@ import { getParticipantCount } from '../../../base/participants/functions';
 import { connect } from '../../../base/redux';
 import { isToolboxVisible } from '../../../toolbox/functions.web';
 import ConferenceTimer from '../ConferenceTimer';
+import Labels from './Labels';
 
 import ParticipantsCount from './ParticipantsCount';
 
@@ -56,18 +57,19 @@ class Subject extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
-        const { _hideConferenceTimer, _showParticipantCount, _showSubject, _subject, _visible } = this.props;
+        const { _hideConferenceNameAndTimer, _hideConferenceTimer, _showParticipantCount, _showSubject, _subject, _visible } = this.props;
         let className = `subject ${_visible ? 'visible' : ''}`;
-
-        if (!_hideConferenceTimer || _showParticipantCount || _showSubject) {
-            className += ' gradient';
-        }
+        const hideLabels = false
 
         return (
             <div className = { className }>
-                { _showSubject && <span className = 'subject-text'>{ _subject }</span>}
+               { !_hideConferenceNameAndTimer
+                 && <div className = 'subject-info'>
+                  { _showSubject && <span className = 'subject-text'>{ _subject }</span>}
+                  { !_hideConferenceTimer && <ConferenceTimer /> }
+                    </div>}
                 { _showParticipantCount && <ParticipantsCount /> }
-                { !_hideConferenceTimer && <ConferenceTimer /> }
+                { hideLabels || <Labels /> }
             </div>
         );
     }
@@ -90,8 +92,10 @@ class Subject extends Component<Props> {
 function _mapStateToProps(state) {
     const participantCount = getParticipantCount(state);
     const { hideConferenceTimer, hideConferenceSubject, hideParticipantsStats } = state['features/base/config'];
+    const { clientWidth } = state['features/base/responsive-ui'];
 
     return {
+        _hideConferenceNameAndTimer: clientWidth < 300,
         _hideConferenceTimer: Boolean(hideConferenceTimer),
         _showParticipantCount: participantCount > 2 && !hideParticipantsStats,
         _showSubject: !hideConferenceSubject,

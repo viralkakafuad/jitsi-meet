@@ -38,16 +38,16 @@ class LocalRecordingLabel extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
-        if (!this.props.isEngaged) {
-            return null;
-        }
+        // if (!this.props.isEngaged) {
+        //     return null;
+        // }
 
         return (
             <Tooltip
                 content = { this.props.t('localRecording.labelToolTip') }
-                position = { 'left' }>
+                position = { 'bottom' }>
                 <CircularLabel
-                    className = 'local-rec'
+                    className = 'label--red'
                     label = { this.props.t('localRecording.label') } />
             </Tooltip>
         );

@@ -27,42 +27,24 @@ type Props = AbstractProps & {
  *
  * @extends Component
  */
-export default class CircularLabel extends AbstractCircularLabel<Props, {}> {
-    /**
-     * Default values for {@code CircularLabel} component's properties.
-     *
-     * @static
-     */
-    static defaultProps = {
-        className: ''
-    };
-
-    /**
-     * Implements React's {@link Component#render()}.
-     *
-     * @inheritdoc
-     * @returns {ReactElement}
-     */
-    render() {
+export default function CircularLabel(props: Props) {
         const {
             className,
             icon,
             id,
             label
-        } = this.props;
+        } = props;
 
-        const labelComponent = icon
-            ? (
-                <Icon
-                    src = { icon } />
-            ) : label;
+    const labelClassName = icon ? 'label-text-with-icon' : ''
 
         return (
             <div
-                className = { `circular-label ${className}` }
+                className = { `label ${className}` }
                 id = { id }>
-                { labelComponent }
+                { icon
+                  && <Icon size = '16'
+                           src = { icon } />}
+                { label && <span className = { labelClassName }>{label}</span> }
             </div>
         );
-    }
 }

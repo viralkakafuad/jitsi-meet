@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React from 'react';
 
 import { getConferenceName } from '../../../base/conference/functions';
 import { getParticipantCount } from '../../../base/participants/functions';
@@ -8,12 +8,18 @@ import { connect } from '../../../base/redux';
 import { isToolboxVisible } from '../../../toolbox/functions.web';
 import ConferenceTimer from '../ConferenceTimer';
 
+import Labels from './Labels';
 import ParticipantsCount from './ParticipantsCount';
 
 /**
  * The type of the React {@code Component} props of {@link Subject}.
  */
 type Props = {
+
+    /**
+     * Whether the conference name and timer should be displayed or not.
+     */
+    _hideConferenceNameAndTimer: Boolean,
 
     /**
      * Whether the conference timer should be shown or not.
@@ -24,11 +30,6 @@ type Props = {
      * Whether the participant count should be shown or not.
      */
     _showParticipantCount: boolean,
-
-    /**
-     * Whether the conference subject should be shown or not.
-     */
-    _showSubject: boolean,
 
     /**
      * The subject or the of the conference.
@@ -43,34 +44,33 @@ type Props = {
 };
 
 /**
- * Subject react component.
+ * The upper band of the meeing containing the conference name, timer and labels.
  *
- * @class Subject
+ * @param {Object} props - The props of the component.
+ * @returns {React$None}
  */
-class Subject extends Component<Props> {
+function ConferenceInfo(props: Props) {
+    const {
+        _hideConferenceNameAndTimer,
+        _hideConferenceTimer,
+        _showParticipantCount,
+        _subject,
+        _visible
+    } = props;
 
-    /**
-     * Implements React's {@link Component#render()}.
-     *
-     * @inheritdoc
-     * @returns {ReactElement}
-     */
-    render() {
-        const { _hideConferenceTimer, _showParticipantCount, _showSubject, _subject, _visible } = this.props;
-        let className = `subject ${_visible ? 'visible' : ''}`;
-
-        if (!_hideConferenceTimer || _showParticipantCount || _showSubject) {
-            className += ' gradient';
-        }
-
-        return (
-            <div className = { className }>
-                { _showSubject && <span className = 'subject-text'>{ _subject }</span>}
-                { _showParticipantCount && <ParticipantsCount /> }
-                { !_hideConferenceTimer && <ConferenceTimer /> }
-            </div>
-        );
-    }
+    return (
+        <div className = { `subject ${_visible ? 'visible' : ''}` }>
+            {
+                !_hideConferenceNameAndTimer
+                        && <div className = 'subject-info'>
+                            { _subject && <span className = 'subject-text'>{ _subject }</span>}
+                            { !_hideConferenceTimer && <ConferenceTimer /> }
+                        </div>
+            }
+            { _showParticipantCount && <ParticipantsCount /> }
+            <Labels />
+        </div>
+    );
 }
 
 /**
@@ -82,7 +82,6 @@ class Subject extends Component<Props> {
  * @returns {{
  *     _hideConferenceTimer: boolean,
  *     _showParticipantCount: boolean,
- *     _showSubject: boolean,
  *     _subject: string,
  *     _visible: boolean
  * }}
@@ -90,14 +89,15 @@ class Subject extends Component<Props> {
 function _mapStateToProps(state) {
     const participantCount = getParticipantCount(state);
     const { hideConferenceTimer, hideConferenceSubject, hideParticipantsStats } = state['features/base/config'];
+    const { clientWidth } = state['features/base/responsive-ui'];
 
     return {
+        _hideConferenceNameAndTimer: clientWidth < 300,
         _hideConferenceTimer: Boolean(hideConferenceTimer),
         _showParticipantCount: participantCount > 2 && !hideParticipantsStats,
-        _showSubject: !hideConferenceSubject,
-        _subject: getConferenceName(state),
+        _subject: hideConferenceSubject ? '' : getConferenceName(state),
         _visible: isToolboxVisible(state)
     };
 }
 
-export default connect(_mapStateToProps)(Subject);
+export default connect(_mapStateToProps)(ConferenceInfo);

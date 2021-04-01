@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { translate } from '../../base/i18n';
-import { CircularLabel } from '../../base/label';
+import { Label } from '../../base/label';
 import { MEDIA_TYPE } from '../../base/media';
 import { connect } from '../../base/redux';
 import { Tooltip } from '../../base/tooltip';
@@ -99,11 +99,11 @@ export class VideoQualityLabel extends AbstractVideoQualityLabel<Props> {
         return (
             <Tooltip
                 content = { t(tooltipKey) }
-                position = { 'left' }>
-                <CircularLabel
+                position = { 'bottom' }>
+                <Label
                     className = { className }
                     id = 'videoResolutionLabel'
-                    label = { labelContent } />
+                    text = { labelContent } />
             </Tooltip>
         );
     }

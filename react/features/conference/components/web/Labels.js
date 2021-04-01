@@ -4,116 +4,61 @@ import React from 'react';
 
 import { JitsiRecordingConstants } from '../../../base/lib-jitsi-meet';
 import { connect } from '../../../base/redux';
-import AbstractLabels, {
-    _abstractMapStateToProps as _mapStateToProps,
-    type Props
-} from '../AbstractLabels';
+import { E2EELabel } from '../../../e2ee';
+import { LocalRecordingLabel } from '../../../local-recording';
+import { RecordingLabel } from '../../../recording';
+import { TranscribingLabel } from '../../../transcribing';
+import { shouldDisplayTileView } from '../../../video-layout';
+import { VideoQualityLabel } from '../../../video-quality';
+
+import { InsecureRoomNameLabel } from '.';
 
 declare var interfaceConfig: Object;
 
-/**
- * The type of the React {@code Component} state of {@link Labels}.
- */
-type State = {
+type Props = {
 
     /**
-     * Whether or not the filmstrip was not visible but has transitioned in the
-     * latest component update to visible. This boolean is used  to set a class
-     * for position animations.
-     *
-     * @type {boolean}
+     * Whether to show video quality label or not.
      */
-    filmstripBecomingVisible: boolean
-};
+     _showVideoQualityLabel: boolean
+}
 
 /**
  * A container to hold video status labels, including recording status and
  * current large video quality.
  *
- * @extends Component
+ * @param {Object} props - The props of the component.
+ * @returns {React$Element}
  */
-class Labels extends AbstractLabels<Props, State> {
-    /**
-     * Updates the state for whether or not the filmstrip is transitioning to
-     * a displayed state.
-     *
-     * @inheritdoc
-     */
-    static getDerivedStateFromProps(props: Props, prevState: State) {
-        return {
-            filmstripBecomingVisible: !prevState.filmstripBecomingVisible && props._filmstripVisible
-        };
-    }
+function Labels(props: Props) {
+    return (
+        <>
+            <E2EELabel />
+            <RecordingLabel mode = { JitsiRecordingConstants.mode.FILE } />
+            <RecordingLabel mode = { JitsiRecordingConstants.mode.STREAM } />
+            <LocalRecordingLabel />
+            <TranscribingLabel />
+            { props._showVideoQualityLabel && <VideoQualityLabel /> }
+            <InsecureRoomNameLabel />
+        </>
+    );
+}
 
-    /**
-     * Initializes a new {@code Labels} instance.
-     *
-     * @param {Object} props - The read-only properties with which the new
-     * instance is to be initialized.
-     */
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            filmstripBecomingVisible: false
-        };
-    }
-
-    /**
-     * Implements React's {@link Component#render()}.
-     *
-     * @inheritdoc
-     * @returns {ReactElement}
-     */
-    render() {
-        const { _filmstripVisible } = this.props;
-        const { filmstripBecomingVisible } = this.state;
-        const { VIDEO_QUALITY_LABEL_DISABLED } = interfaceConfig;
-        const className = `large-video-labels ${
-            filmstripBecomingVisible ? 'opening' : ''} ${
-            _filmstripVisible ? 'with-filmstrip' : 'without-filmstrip'}`;
-
-        return (
-            <div className = { className } >
-                {
-                    this._renderE2EELabel()
-                }
-                {
-                    this._renderRecordingLabel(
-                        JitsiRecordingConstants.mode.FILE)
-                }
-                {
-                    this._renderRecordingLabel(
-                        JitsiRecordingConstants.mode.STREAM)
-                }
-                {
-                    this._renderLocalRecordingLabel()
-                }
-                {
-                    this._renderTranscribingLabel()
-                }
-                {
-                    this.props._showVideoQualityLabel && !VIDEO_QUALITY_LABEL_DISABLED
-                        && this._renderVideoQualityLabel()
-                }
-                {
-                    this._renderInsecureRoomNameLabel()
-                }
-            </div>
-        );
-    }
-
-    _renderE2EELabel: () => React$Element<*>;
-
-    _renderLocalRecordingLabel: () => React$Element<*>;
-
-    _renderRecordingLabel: string => React$Element<*>;
-
-    _renderTranscribingLabel: () => React$Element<*>;
-
-    _renderInsecureRoomNameLabel: () => React$Element<any>;
-
-    _renderVideoQualityLabel: () => React$Element<*>;
+/**
+ * Maps (parts of) the redux state to the associated props of the {@link Labels}
+ * {@code Component}.
+ *
+ * @param {Object} state - The redux state.
+ * @private
+ * @returns {{
+ *     _filmstripVisible: boolean,
+ *     _showVideoQualityLabel: boolean
+ * }}
+ */
+function _mapStateToProps(state: Object) {
+    return {
+        _showVideoQualityLabel: !(shouldDisplayTileView(state) || interfaceConfig.VIDEO_QUALITY_LABEL_DISABLED)
+    };
 }
 
 export default connect(_mapStateToProps)(Labels);

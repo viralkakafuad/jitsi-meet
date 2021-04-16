@@ -95,7 +95,7 @@ type Props = AbstractProps & {
 
     dispatch: Function,
     t: Function
-}
+
 
 /**
  * The conference page of the Web application.
